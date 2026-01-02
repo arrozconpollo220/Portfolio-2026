@@ -1,3 +1,7 @@
+// ===== Mobile Navigation Toggle =====
+const hamburger = document.querySelector('.hamburger');
+const navMenu = document.querySelector('.nav-menu');
+
 // ===== Smooth Scrolling Navigation =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -9,15 +13,13 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 block: 'start'
             });
             // Close mobile menu if open
-            navMenu.classList.remove('active');
-            hamburger.classList.remove('active');
+            if (navMenu && hamburger) {
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
         }
     });
 });
-
-// ===== Mobile Navigation Toggle =====
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
 
 hamburger.addEventListener('click', () => {
     hamburger.classList.toggle('active');
@@ -260,17 +262,17 @@ projectCards.forEach(card => {
 });
 
 // ===== Dynamic Stats Counter =====
-function animateCounter(element, target, duration = 2000) {
+function animateCounter(element, target, suffix, duration = 2000) {
     let start = 0;
     const increment = target / (duration / 16);
     
     const timer = setInterval(() => {
         start += increment;
         if (start >= target) {
-            element.textContent = target + (element.textContent.includes('+') ? '+' : '%');
+            element.textContent = target + suffix;
             clearInterval(timer);
         } else {
-            element.textContent = Math.floor(start) + (element.textContent.includes('+') ? '+' : '%');
+            element.textContent = Math.floor(start) + suffix;
         }
     }, 16);
 }
@@ -284,9 +286,10 @@ const statsObserver = new IntersectionObserver((entries) => {
                 statNumber.classList.add('animated');
                 const text = statNumber.textContent;
                 const number = parseInt(text);
+                const suffix = text.replace(/\d+/g, '');
                 if (!isNaN(number)) {
-                    statNumber.textContent = '0';
-                    animateCounter(statNumber, number);
+                    statNumber.textContent = '0' + suffix;
+                    animateCounter(statNumber, number, suffix);
                 }
             }
             statsObserver.unobserve(entry.target);
